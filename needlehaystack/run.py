@@ -6,9 +6,10 @@ from jsonargparse import CLI
 
 from . import LLMNeedleHaystackTester, LLMMultiNeedleHaystackTester
 from .evaluators import Evaluator, LangSmithEvaluator, OpenAIEvaluator
-from .providers import Anthropic, ModelProvider, OpenAI, Cohere
+from .providers import Anthropic, ModelProvider, OpenAI, HuggingFace
 
 load_dotenv()
+
 
 @dataclass
 class CommandArgs():
@@ -16,7 +17,8 @@ class CommandArgs():
     evaluator: str = "openai"
     model_name: str = "gpt-3.5-turbo-0125"
     evaluator_model_name: Optional[str] = "gpt-3.5-turbo-0125"
-    needle: Optional[str] = "\nThe best thing to do in San Francisco is eat a sandwich and sit in Dolores Park on a sunny day.\n"
+    needle: Optional[
+        str] = "\nThe best thing to do in San Francisco is eat a sandwich and sit in Dolores Park on a sunny day.\n"
     haystack_dir: Optional[str] = "PaulGrahamEssays"
     retrieval_question: Optional[str] = "What is the best thing to do in San Francisco?"
     results_version: Optional[int] = 1
@@ -39,22 +41,24 @@ class CommandArgs():
     eval_set: Optional[str] = "multi-needle-eval-pizza-3"
     # Multi-needle parameters
     multi_needle: Optional[bool] = False
+    multi_needle_type: Optional[str] = "depth_percent"
     needles: list[str] = field(default_factory=lambda: [
-        " Figs are one of the secret ingredients needed to build the perfect pizza. ", 
-        " Prosciutto is one of the secret ingredients needed to build the perfect pizza. ", 
+        " Figs are one of the secret ingredients needed to build the perfect pizza. ",
+        " Prosciutto is one of the secret ingredients needed to build the perfect pizza. ",
         " Goat cheese is one of the secret ingredients needed to build the perfect pizza. "
     ])
+
 
 def get_model_to_test(args: CommandArgs) -> ModelProvider:
     """
     Determines and returns the appropriate model provider based on the provided command arguments.
-    
+
     Args:
         args (CommandArgs): The command line arguments parsed into a CommandArgs dataclass instance.
-        
+
     Returns:
         ModelProvider: An instance of the specified model provider class.
-    
+
     Raises:
         ValueError: If the specified provider is not supported.
     """
@@ -63,21 +67,22 @@ def get_model_to_test(args: CommandArgs) -> ModelProvider:
             return OpenAI(model_name=args.model_name)
         case "anthropic":
             return Anthropic(model_name=args.model_name)
-        case "cohere":
-            return Cohere(model_name=args.model_name)
+        case "huggingface":
+            return HuggingFace(model_name=args.model_name)
         case _:
             raise ValueError(f"Invalid provider: {args.provider}")
+
 
 def get_evaluator(args: CommandArgs) -> Evaluator:
     """
     Selects and returns the appropriate evaluator based on the provided command arguments.
-    
+
     Args:
         args (CommandArgs): The command line arguments parsed into a CommandArgs dataclass instance.
-        
+
     Returns:
         Evaluator: An instance of the specified evaluator class.
-        
+
     Raises:
         ValueError: If the specified evaluator is not supported.
     """
@@ -91,24 +96,26 @@ def get_evaluator(args: CommandArgs) -> Evaluator:
         case _:
             raise ValueError(f"Invalid evaluator: {args.evaluator}")
 
+
 def main():
     """
     The main function to execute the testing process based on command line arguments.
-    
+
     It parses the command line arguments, selects the appropriate model provider and evaluator,
     and initiates the testing process either for single-needle or multi-needle scenarios.
     """
     args = CLI(CommandArgs, as_positional=False)
     args.model_to_test = get_model_to_test(args)
     args.evaluator = get_evaluator(args)
-    
+
     if args.multi_needle == True:
         print("Testing multi-needle")
         tester = LLMMultiNeedleHaystackTester(**args.__dict__)
-    else: 
+    else:
         print("Testing single-needle")
         tester = LLMNeedleHaystackTester(**args.__dict__)
     tester.start_test()
+
 
 if __name__ == "__main__":
     main()
