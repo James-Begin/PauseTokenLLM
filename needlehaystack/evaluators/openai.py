@@ -8,18 +8,18 @@ from langchain_community.chat_models import ChatOpenAI
 class OpenAIEvaluator(Evaluator):
     DEFAULT_MODEL_KWARGS: dict = dict(temperature=0)
     CRITERIA = {"accuracy": """
-                Score 1: The answer is completely unrelated to the reference.
-                Score 3: The answer has minor relevance but does not align with the reference.
-                Score 5: The answer has moderate relevance but contains inaccuracies.
-                Score 7: The answer aligns with the reference but has minor omissions.
-                Score 10: The answer is completely accurate and aligns perfectly with the reference.
-                Only respond with a numberical score"""}
+                    Score 1: The answer is completely unrelated to the reference.
+                    Score 3: The answer has minor relevance but does not align with the reference.
+                    Score 5: The answer has moderate relevance but contains inaccuracies.
+                    Score 7: The answer aligns with the reference but has minor omissions.
+                    Score 10: The answer is completely accurate and aligns perfectly with the reference.
+                    Only respond with a numberical score"""}
 
     def __init__(self,
                  model_name: str = "gpt-3.5-turbo-0125",
                  model_kwargs: dict = DEFAULT_MODEL_KWARGS,
                  true_answer: str = None,
-                 question_asked: str = None,):
+                 question_asked: str = None, ):
         """
         :param model_name: The name of the model.
         :param model_kwargs: Model configuration. Default is {temperature: 0}

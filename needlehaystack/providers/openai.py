@@ -77,7 +77,7 @@ class OpenAI(ModelProvider):
         """
         return [{
                 "role": "system",
-                "content": "You are a helpful AI bot that answers questions for a user. Keep your response short and direct"
+                "content": "You are a helpful AI bot that answers questions for a user. Keep your response short and direct."
             },
             {
                 "role": "user",

@@ -228,6 +228,7 @@ class LLMMultiNeedleHaystackTester(LLMNeedleHaystackTester):
             print("EVALUATOR: OpenAI Model")
             # Prepare your message to send to the model you're going to evaluate
             prompt = self.model_to_test.generate_prompt(context, self.retrieval_question)
+            #print(prompt)
             # Go see if the model can answer the question to pull out your random fact
             response = await self.model_to_test.evaluate_model(prompt)
             # Compare the reponse to the actual needle you placed

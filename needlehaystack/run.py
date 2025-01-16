@@ -18,9 +18,9 @@ class CommandArgs():
     model_name: str = "gpt-3.5-turbo-0125"
     evaluator_model_name: Optional[str] = "gpt-3.5-turbo-0125"
     needle: Optional[
-        str] = "\nThe best thing to do in San Francisco is eat a sandwich and sit in Dolores Park on a sunny day.\n"
+        str] = " The secret ingredients needed to build the perfect pizza mentioned in the document are figs, prosciutto, and goat cheese" #"\nThe best thing to do in San Francisco is eat a sandwich and sit in Dolores Park on a sunny day.\n"
     haystack_dir: Optional[str] = "PaulGrahamEssays"
-    retrieval_question: Optional[str] = "What is the best thing to do in San Francisco?"
+    retrieval_question: Optional[str] = "What is the best thing to do in San Francisco?" #"What are the secret ingredients needed to build the perfect pizza?"
     results_version: Optional[int] = 1
     context_lengths_min: Optional[int] = 1000
     context_lengths_max: Optional[int] = 16000
@@ -90,7 +90,7 @@ def get_evaluator(args: CommandArgs) -> Evaluator:
         case "openai":
             return OpenAIEvaluator(model_name=args.evaluator_model_name,
                                    question_asked=args.retrieval_question,
-                                   true_answer=args.needle)
+                                   true_answer=args.needles)
         case "langsmith":
             return LangSmithEvaluator()
         case _:
